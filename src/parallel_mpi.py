@@ -1,65 +1,9 @@
+from parameters import n, w, positions, sigma_x, sigma_y
+from main import custom_multi_modal, gradient_descent, gradient_custom_multi_modal
 from mpi4py import MPI
 import numpy as np
 import random
 import time
-
-# Define parameters for the Gaussian wells
-n = 7  # Total number of minima (1 global + 6 local)
-
-# Define weights (depths)
-w = [1.0, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3]
-
-# Define positions (mu_x, mu_y)
-positions = [
-    (2.5, 2.5),  # Global minimum
-    (1, 1),
-    (4, 1),
-    (1, 4),
-    (4, 4),
-    (3, 3),
-    (2, 4)
-]
-
-# Define standard deviations (spread)
-sigma_x = [0.5] * n
-sigma_y = [0.5] * n
-
-def custom_multi_modal(x, y, w, positions, sigma_x, sigma_y):
-    total = 0
-    for i in range(n):
-        total += w[i] * np.exp(-(((x - positions[i][0])**2) / (2 * sigma_x[i]**2) +
-                                 ((y - positions[i][1])**2) / (2 * sigma_y[i]**2)))
-    return -(total)
-
-def gradient_custom_multi_modal(x, y, w, positions, sigma_x, sigma_y):
-    df_dx = 0
-    df_dy = 0
-    for i in range(n):
-        exponent = -(((x - positions[i][0])**2) / (2 * sigma_x[i]**2) +
-                     ((y - positions[i][1])**2) / (2 * sigma_y[i]**2))
-        df_dx += (w[i] * (x - positions[i][0]) / (sigma_x[i]**2)) * np.exp(exponent)
-        df_dy += (w[i] * (y - positions[i][1]) / (sigma_y[i]**2)) * np.exp(exponent)
-    return np.array([df_dx, df_dy])
-
-def gradient_descent(f, grad_f, initial_point, learning_rate=0.01, max_iters=1000, tolerance=1e-6):
-    x, y = initial_point
-    history = [(x, y, f(x, y))]
-
-    for i in range(max_iters):
-        gradient = grad_f(x, y)
-        x_new = x - learning_rate * gradient[0]
-        y_new = y - learning_rate * gradient[1]
-        current_val = f(x_new, y_new)
-        history.append((x_new, y_new, current_val))
-
-        # Check for convergence
-        if np.linalg.norm([x_new - x, y_new - y]) < tolerance:
-            print(f'Converged in {i+1} iterations.')
-            break
-
-        x, y = x_new, y_new
-
-    return (x, y), current_val, history
 
 def multi_start_parallel(f, grad_f, num_starts_per_process, learning_rate, max_iters, tolerance):
     comm = MPI.COMM_WORLD
@@ -73,8 +17,8 @@ def multi_start_parallel(f, grad_f, num_starts_per_process, learning_rate, max_i
     # Each process runs gradient descent from multiple starting points
     for _ in range(num_starts_per_process):
         # Generate a random starting point
-        x0 = random.uniform(0, 5)
-        y0 = random.uniform(0, 5)
+        x0 = random.uniform(-5, 5)
+        y0 = random.uniform(-5, 5)
         initial_point = (x0, y0)
 
         # Run gradient descent from the starting point
@@ -121,7 +65,7 @@ if __name__ == "__main__":
     if len(sys.argv) > 1:
         num_starts_total = int(sys.argv[1])
     else:
-        num_starts_total = 10  # Default value
+        num_starts_total = 75  # Default value
 
     # Determine the number of starts per process
     num_starts_per_process = num_starts_total // size
@@ -157,8 +101,8 @@ if rank == 0:
     import plotly.io as pio
 
     # Create a grid for visualization
-    x_grid = np.linspace(0, 5, 200)
-    y_grid = np.linspace(0, 5, 200)
+    x_grid = np.linspace(-5, 5, 500)
+    y_grid = np.linspace(-5, 5, 500)
     X, Y = np.meshgrid(x_grid, y_grid)
     Z = custom_multi_modal(X, Y, w, positions, sigma_x, sigma_y)
 
@@ -215,4 +159,4 @@ if rank == 0:
         fig.add_trace(trace)
 
     # Save the figure to an HTML file
-    pio.write_html(fig, file='parallel_optimization_paths.html', auto_open=True)
+    pio.write_html(fig, file='../data/parallel_optimization_paths.html', auto_open=True)

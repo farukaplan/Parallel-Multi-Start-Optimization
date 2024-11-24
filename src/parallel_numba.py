@@ -1,58 +1,58 @@
-# omp_multi_start.py
-
 import numpy as np
-import random
 import time
 from numba import njit, prange
-
-# Define parameters for the Gaussian wells
-n = 7  # Total number of minima (1 global + 6 local)
-
-# Convert lists to NumPy arrays for Numba compatibility
-w = np.array([1.0, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3])
-
-positions = np.array([
-    (2.5, 2.5),  # Global minimum
-    (1, 1),
-    (4, 1),
-    (1, 4),
-    (4, 4),
-    (3, 3),
-    (2, 4)
-])
-
-sigma_x = np.array([0.5] * n)
-sigma_y = np.array([0.5] * n)
+from parameters import n, w, positions, sigma_x, sigma_y
 
 def custom_multi_modal_array(x, y, w, positions, sigma_x, sigma_y):
     total = np.zeros_like(x)
     for i in range(n):
-        exponent = -(((x - positions[i, 0]) ** 2) / (2 * sigma_x[i] ** 2) +
-                     ((y - positions[i, 1]) ** 2) / (2 * sigma_y[i] ** 2))
+        exponent = -(((x - positions[i, 0]) ** 2) / (2.0 * sigma_x[i] ** 2) +
+                     ((y - positions[i, 1]) ** 2) / (2.0 * sigma_y[i] ** 2))
         total += w[i] * np.exp(exponent)
-    return -total
+    # Sinusoidal Components
+    sin_component = 0.2 * np.sin(4.0 * np.pi * x) * np.cos(3.0 * np.pi * y)
+    # Polynomial Trend
+    poly_component = 0.1 * (0.2 * x**2 + 0.8 * y**2)
+    return -(total + sin_component - poly_component)
 
 @njit
 def custom_multi_modal(x, y, w, positions, sigma_x, sigma_y):
     total = 0.0
     for i in range(n):
-        exponent = -(((x - positions[i, 0]) ** 2) / (2 * sigma_x[i] ** 2) +
-                     ((y - positions[i, 1]) ** 2) / (2 * sigma_y[i] ** 2))
+        exponent = -(((x - positions[i, 0]) ** 2) / (2.0 * sigma_x[i] ** 2) +
+                     ((y - positions[i, 1]) ** 2) / (2.0 * sigma_y[i] ** 2))
         total += w[i] * np.exp(exponent)
-    return -total
-
-
+    # Sinusoidal Components
+    sin_component = 0.2 * np.sin(4.0 * np.pi * x) * np.cos(3.0 * np.pi * y)
+    # Polynomial Trend
+    poly_component = 0.1 * (0.2 * x**2 + 0.8 * y**2)
+    return -(total + sin_component - poly_component)
 
 @njit
 def gradient_custom_multi_modal(x, y, w, positions, sigma_x, sigma_y):
-    df_dx = 0.0
-    df_dy = 0.0
+    df_dx_total = 0.0
+    df_dy_total = 0.0
     for i in range(n):
-        exponent = -(((x - positions[i, 0])**2) / (2 * sigma_x[i]**2) +
-                     ((y - positions[i, 1])**2) / (2 * sigma_y[i]**2))
+        exponent = -(((x - positions[i, 0]) ** 2) / (2.0 * sigma_x[i] ** 2) +
+                     ((y - positions[i, 1]) ** 2) / (2.0 * sigma_y[i] ** 2))
         common_factor = w[i] * np.exp(exponent)
-        df_dx += common_factor * ((x - positions[i, 0]) / (sigma_x[i]**2))
-        df_dy += common_factor * ((y - positions[i, 1]) / (sigma_y[i]**2))
+        df_dx_total += common_factor * ((x - positions[i, 0]) / (sigma_x[i] ** 2))
+        df_dy_total += common_factor * ((y - positions[i, 1]) / (sigma_y[i] ** 2))
+
+    # Gradient of Sinusoidal Component
+    sin_coeff = 0.2
+    df_dx_sin = sin_coeff * 4.0 * np.pi * np.cos(4.0 * np.pi * x) * np.cos(3.0 * np.pi * y)
+    df_dy_sin = -sin_coeff * 3.0 * np.pi * np.sin(4.0 * np.pi * x) * np.sin(3.0 * np.pi * y)
+
+    # Gradient of Polynomial Trend
+    poly_coeff = 0.1
+    df_dx_poly = 2.0 * poly_coeff * 0.2 * x
+    df_dy_poly = 2.0 * poly_coeff * 0.8 * y
+
+    # Combine gradients with correct signs
+    df_dx = df_dx_total + df_dx_sin - df_dx_poly
+    df_dy = df_dy_total + df_dy_sin - df_dy_poly
+
     return np.array([df_dx, df_dy])
 
 @njit
@@ -74,8 +74,8 @@ def gradient_descent(f, grad_f, initial_point, w, positions, sigma_x, sigma_y, l
     return (x, y), current_val, history
 
 def generate_random_points(num_points):
-    x_points = np.random.uniform(0, 5, num_points)
-    y_points = np.random.uniform(0, 5, num_points)
+    x_points = np.random.uniform(-5, 5, num_points)
+    y_points = np.random.uniform(-5, 5, num_points)
     return x_points, y_points
 
 @njit(parallel=True)
@@ -119,10 +119,10 @@ if __name__ == "__main__":
     if len(sys.argv) > 1:
         num_starts_total = int(sys.argv[1])
     else:
-        num_starts_total = 10  # Default value
+        num_starts_total = 75  # Default value
 
     # Set random seed for reproducibility
-    np.random.seed(42)
+    #np.random.seed(42)
 
     # Generate random starting points
     x_starts, y_starts = generate_random_points(num_starts_total)
@@ -157,12 +157,11 @@ if __name__ == "__main__":
     import plotly.io as pio
 
     # Create a grid for visualization
-    x_grid = np.linspace(0, 5, 200)
-    y_grid = np.linspace(0, 5, 200)
+    x_grid = np.linspace(-5, 5, 500)
+    y_grid = np.linspace(-5, 5, 500)
     X, Y = np.meshgrid(x_grid, y_grid)
     # Compute Z using the non-JIT function
     Z = custom_multi_modal_array(X, Y, w, positions, sigma_x, sigma_y)
-
 
     # Plotting with Plotly
     surface = go.Surface(
@@ -208,4 +207,4 @@ if __name__ == "__main__":
         fig.add_trace(path_trace)
 
     # Save the figure
-    pio.write_html(fig, file='numba_parallel_optimization_paths.html', auto_open=True)
+    pio.write_html(fig, file='../data/numba_parallel_optimization_paths.html', auto_open=True)
