@@ -13,7 +13,6 @@ def multi_start_sequential(f, grad_f, num_starts, learning_rate, max_iters, tole
     start_time = time.time()
 
     for i in range(num_starts):
-        # Generate a random starting point
         x0 = random.uniform(-5, 5)
         y0 = random.uniform(-5, 5)
         initial_point = (x0, y0)
@@ -68,7 +67,7 @@ surface = go.Surface(
     z=Z,
     colorscale='Viridis',
     showscale=True,
-    opacity=0.8  # Adjust opacity to make paths more visible
+    opacity=0.8 
 )
 
 layout = go.Layout(
@@ -91,7 +90,7 @@ for idx, history in enumerate(history_seq):
     history = np.array(history)
     x_path = history[:, 0]
     y_path = history[:, 1]
-    z_path = history[:, 2]  # f(x, y)
+    z_path = history[:, 2]
 
     path_trace = go.Scatter3d(
         x=x_path,
@@ -113,4 +112,8 @@ for idx, history in enumerate(history_seq):
 for trace in path_traces:
     fig.add_trace(trace)
 
-pio.write_html(fig, file='../data/multi_sequential_gd.html', auto_open=True)
+# Save and display the image
+pio.write_html(fig, file='data/multi_sequential_gd.html', auto_open=True)
+
+# For Linux based systems, change last line with this line
+# pio.write_html(fig, file='../data/multi_sequential_gd.html', auto_open=True)

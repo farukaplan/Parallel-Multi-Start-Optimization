@@ -9,10 +9,13 @@ def custom_multi_modal_array(x, y, w, positions, sigma_x, sigma_y):
         exponent = -(((x - positions[i, 0]) ** 2) / (2.0 * sigma_x[i] ** 2) +
                      ((y - positions[i, 1]) ** 2) / (2.0 * sigma_y[i] ** 2))
         total += w[i] * np.exp(exponent)
+
     # Sinusoidal Components
     sin_component = 0.2 * np.sin(4.0 * np.pi * x) * np.cos(3.0 * np.pi * y)
+
     # Polynomial Trend
     poly_component = 0.1 * (0.2 * x**2 + 0.8 * y**2)
+
     return -(total + sin_component - poly_component)
 
 @njit
@@ -22,10 +25,13 @@ def custom_multi_modal(x, y, w, positions, sigma_x, sigma_y):
         exponent = -(((x - positions[i, 0]) ** 2) / (2.0 * sigma_x[i] ** 2) +
                      ((y - positions[i, 1]) ** 2) / (2.0 * sigma_y[i] ** 2))
         total += w[i] * np.exp(exponent)
+
     # Sinusoidal Components
     sin_component = 0.2 * np.sin(4.0 * np.pi * x) * np.cos(3.0 * np.pi * y)
+
     # Polynomial Trend
     poly_component = 0.1 * (0.2 * x**2 + 0.8 * y**2)
+
     return -(total + sin_component - poly_component)
 
 @njit
@@ -66,6 +72,7 @@ def gradient_descent(f, grad_f, initial_point, w, positions, sigma_x, sigma_y, l
         y_new = y - learning_rate * gradient[1]
         current_val = f(x_new, y_new, w, positions, sigma_x, sigma_y)
         history[i, :] = np.array([x_new, y_new, current_val])
+
         # Check for convergence
         if np.sqrt((x_new - x)**2 + (y_new - y)**2) < tolerance:
             history = history[:i+1, :]
@@ -127,7 +134,6 @@ if __name__ == "__main__":
     # Generate random starting points
     x_starts, y_starts = generate_random_points(num_starts_total)
 
-    # Start timing
     start_time = time.time()
 
     # Run the parallel multi-start optimization
@@ -152,7 +158,6 @@ if __name__ == "__main__":
     print(f'Best position (Parallel): {best_position}')
     print(f'Best fitness (Parallel): {best_fitness}')
 
-    # Visualization (Optional)
     import plotly.graph_objs as go
     import plotly.io as pio
 
@@ -160,6 +165,7 @@ if __name__ == "__main__":
     x_grid = np.linspace(-5, 5, 500)
     y_grid = np.linspace(-5, 5, 500)
     X, Y = np.meshgrid(x_grid, y_grid)
+
     # Compute Z using the non-JIT function
     Z = custom_multi_modal_array(X, Y, w, positions, sigma_x, sigma_y)
 
@@ -189,7 +195,6 @@ if __name__ == "__main__":
 
     # Prepare path traces
     for idx, history in enumerate(histories):
-        # Trim zeros from preallocated history
         history = history[~np.all(history == 0, axis=1)]
         x_path = history[:, 0]
         y_path = history[:, 1]

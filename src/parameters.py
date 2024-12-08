@@ -1,11 +1,12 @@
 import numpy as np
 
 # Define parameters for the Gaussian wells
-n = 15  # Number of minima (1 global + 14 local)
+n = 15  # Number of minima
 
 # Define weights (depths)
 # The global minimum has the largest weight
 w = np.array([4.5, 3.3, 3.2, 2.1, 4.0, 1.9, 3.8, 2.7, 3.6, 0.5, 1.4, 3.3, 0.2, 1.1, 2.05])
+
 
 # Define positions (mu_x, mu_y)
 positions = np.array([

@@ -15,7 +15,7 @@ best_position, best_fitness, history = gradient_descent(
     f = lambda x, y: custom_multi_modal(x, y, w, positions, sigma_x, sigma_y),
     grad_f = lambda x, y: gradient_custom_multi_modal(x, y, w, positions, sigma_x, sigma_y),
     initial_point = initial_point,
-    learning_rate = 0.001,  # Adjusted for better convergence
+    learning_rate = 0.001,
     max_iters = 1000,
     tolerance = 1e-6
 )
@@ -36,7 +36,7 @@ surface = go.Surface(
     z=Z,
     colorscale='Viridis',
     showscale=True,
-    opacity=0.8  # Adjust opacity to make the path more visible
+    opacity=0.8 
 )
 
 layout = go.Layout(
@@ -56,7 +56,7 @@ fig = go.Figure(data=[surface], layout=layout)
 history = np.array(history)
 x_path = history[:, 0]
 y_path = history[:, 1]
-z_path = history[:, 2]  # f(x, y)
+z_path = history[:, 2]
 
 # Create the path trace
 path_trace = go.Scatter3d(
@@ -80,4 +80,7 @@ path_trace = go.Scatter3d(
 fig.add_trace(path_trace)
 
 # Save and display the image
-pio.write_html(fig, file='../data/single_start_gd.html', auto_open=True)
+pio.write_html(fig, file='data/single_start_gd.html', auto_open=True)
+
+# For linux-based systems, change the last line with this line
+# pio.write_html(fig, file='../data/single_start_gd.html', auto_open=True)
