@@ -100,4 +100,7 @@ layout = go.Layout(
 fig = go.Figure(data=[surface], layout=layout)
 
 # Save and display the image
-pio.write_html(fig, file='../data/cost_function.html', auto_open=False)
+pio.write_html(fig, file='data/cost_function.html', auto_open=True)
+
+# For linux-based systems, change last line with this line
+# pio.write_html(fig, file='../data/cost_function.html', auto_open=False)

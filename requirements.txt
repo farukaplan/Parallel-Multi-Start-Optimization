@@ -1,0 +1,7 @@
+Python3
+numpy
+plotly
+mpi4py
+numba
+time
+random

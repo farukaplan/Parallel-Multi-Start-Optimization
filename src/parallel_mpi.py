@@ -3,7 +3,6 @@ from main import custom_multi_modal, gradient_descent, gradient_custom_multi_mod
 from mpi4py import MPI
 import numpy as np
 import random
-import time
 
 def multi_start_parallel(f, grad_f, num_starts_per_process, learning_rate, max_iters, tolerance):
     comm = MPI.COMM_WORLD
@@ -16,7 +15,6 @@ def multi_start_parallel(f, grad_f, num_starts_per_process, learning_rate, max_i
 
     # Each process runs gradient descent from multiple starting points
     for _ in range(num_starts_per_process):
-        # Generate a random starting point
         x0 = random.uniform(-5, 5)
         y0 = random.uniform(-5, 5)
         initial_point = (x0, y0)
@@ -61,7 +59,6 @@ if __name__ == "__main__":
 
     import sys
 
-    # Read the total number of starts from command line arguments
     if len(sys.argv) > 1:
         num_starts_total = int(sys.argv[1])
     else:
@@ -73,7 +70,6 @@ if __name__ == "__main__":
     if rank < remainder:
         num_starts_per_process += 1
 
-    # Start timing
     start_time = MPI.Wtime()
 
     # Run the parallel multi-start optimization
@@ -86,7 +82,6 @@ if __name__ == "__main__":
         tolerance=1e-6
     )
 
-    # End timing
     end_time = MPI.Wtime()
     total_time = end_time - start_time
 
@@ -136,7 +131,7 @@ if rank == 0:
         history = np.array(history)
         x_path = history[:, 0]
         y_path = history[:, 1]
-        z_path = history[:, 2]  # f(x, y)
+        z_path = history[:, 2]
 
         path_trace = go.Scatter3d(
             x=x_path,
