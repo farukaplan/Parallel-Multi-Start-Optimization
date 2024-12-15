@@ -1,7 +1,8 @@
 from parameters import n, w, positions, sigma_x, sigma_y
-import numpy as np
 import plotly.graph_objs as go
 import plotly.io as pio
+import numpy as np
+
 
 def custom_multi_modal(x, y, w, positions, sigma_x, sigma_y):
     total = 0
@@ -100,7 +101,7 @@ layout = go.Layout(
 fig = go.Figure(data=[surface], layout=layout)
 
 # Save and display the image
-pio.write_html(fig, file='data/cost_function.html', auto_open=True)
+# pio.write_html(fig, file='data/cost_function.html', auto_open=True)
 
 # For linux-based systems, change last line with this line
-# pio.write_html(fig, file='../data/cost_function.html', auto_open=False)
+pio.write_html(fig, file='../data/cost_function.html', auto_open=False)

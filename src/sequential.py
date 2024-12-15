@@ -1,10 +1,11 @@
-from parameters import n, w, positions, sigma_x, sigma_y
 from main import custom_multi_modal, gradient_descent, gradient_custom_multi_modal
+from parameters import n, w, positions, sigma_x, sigma_y
 import plotly.graph_objs as go
 import plotly.io as pio
 import numpy as np
 import random
 import time
+import sys
 
 def multi_start_sequential(f, grad_f, num_starts, learning_rate, max_iters, tolerance):
     best_position = None
@@ -39,7 +40,11 @@ def multi_start_sequential(f, grad_f, num_starts, learning_rate, max_iters, tole
 
     return best_position, best_fitness, history_all, total_time
 
-num_starts = 75  # Number of starting points
+# Read the total number of starts from command line arguments
+if len(sys.argv) > 1:
+    num_starts = int(sys.argv[1])
+else:
+    num_starts = 128
 
 best_position_seq, best_fitness_seq, history_seq, time_seq = multi_start_sequential(
     f=lambda x, y: custom_multi_modal(x, y, w, positions, sigma_x, sigma_y),
@@ -113,7 +118,7 @@ for trace in path_traces:
     fig.add_trace(trace)
 
 # Save and display the image
-pio.write_html(fig, file='data/multi_sequential_gd.html', auto_open=True)
+# pio.write_html(fig, file='data/multi_sequential_gd.html', auto_open=True)
 
 # For Linux based systems, change last line with this line
-# pio.write_html(fig, file='../data/multi_sequential_gd.html', auto_open=True)
+pio.write_html(fig, file='../data/multi_sequential_gd.html', auto_open=True)

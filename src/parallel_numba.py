@@ -1,7 +1,7 @@
+from parameters import n, w, positions, sigma_x, sigma_y
+from numba import njit, prange
 import numpy as np
 import time
-from numba import njit, prange
-from parameters import n, w, positions, sigma_x, sigma_y
 
 def custom_multi_modal_array(x, y, w, positions, sigma_x, sigma_y):
     total = np.zeros_like(x)
@@ -126,7 +126,7 @@ if __name__ == "__main__":
     if len(sys.argv) > 1:
         num_starts_total = int(sys.argv[1])
     else:
-        num_starts_total = 75  # Default value
+        num_starts_total = 128
 
     # Set random seed for reproducibility
     #np.random.seed(42)
