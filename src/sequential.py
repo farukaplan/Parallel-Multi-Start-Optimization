@@ -121,4 +121,4 @@ for trace in path_traces:
 # pio.write_html(fig, file='data/multi_sequential_gd.html', auto_open=True)
 
 # For Linux based systems, change last line with this line
-pio.write_html(fig, file='../data/multi_sequential_gd.html', auto_open=True)
+pio.write_html(fig, file='../data/multi_sequential_gd.html', auto_open=False)

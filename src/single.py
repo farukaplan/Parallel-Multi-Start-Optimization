@@ -83,4 +83,4 @@ fig.add_trace(path_trace)
 # pio.write_html(fig, file='data/single_start_gd.html', auto_open=True)
 
 # For linux-based systems, change the last line with this line
-pio.write_html(fig, file='../data/single_start_gd.html', auto_open=True)
+pio.write_html(fig, file='../data/single_start_gd.html', auto_open=False)

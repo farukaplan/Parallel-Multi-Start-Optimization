@@ -157,4 +157,4 @@ if __name__ == "__main__":
             fig.add_trace(trace)
 
         # Save the figure to an HTML file
-        pio.write_html(fig, file='../data/parallel_optimization_paths.html', auto_open=True)
+        pio.write_html(fig, file='../data/parallel_optimization_paths.html', auto_open=False)

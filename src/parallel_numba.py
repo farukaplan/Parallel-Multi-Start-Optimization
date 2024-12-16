@@ -212,4 +212,4 @@ if __name__ == "__main__":
         fig.add_trace(path_trace)
 
     # Save the figure
-    pio.write_html(fig, file='../data/numba_parallel_optimization_paths.html', auto_open=True)
+    pio.write_html(fig, file='../data/numba_parallel_optimization_paths.html', auto_open=False)
