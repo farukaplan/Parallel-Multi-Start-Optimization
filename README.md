@@ -1,6 +1,6 @@
 # Parallel Multi-Start Optimization
 
-### Introduction
+### Information
 1) **Cost Function**: We used custom cost function to show effectiveness of the model, but you can apply it to any cost function as you wish:
 
 $$ f(x, y) = -\left( \sum_{i=1}^{n} w_i \exp\left(-\left(\frac{(x - p_{i,x})^2}{2\sigma_{x,i}^2} + \frac{(y - p_{i,y})^2}{2\sigma_{y,i}^2}\right)\right) + 0.2 \sin(4\pi x) \cos(3\pi y) - 0.1 \left(\frac{1}{5}x^2 + \frac{4}{5}y^2\right) \right) $$
