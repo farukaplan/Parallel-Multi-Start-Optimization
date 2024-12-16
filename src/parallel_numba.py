@@ -1,7 +1,16 @@
 from parameters import n, w, positions, sigma_x, sigma_y
-from numba import njit, prange
+from numba import njit, prange, set_num_threads, get_num_threads
 import numpy as np
 import time
+import sys
+
+if len(sys.argv) > 2:
+        num_threads = int(sys.argv[2])
+else:
+    num_threads = 4
+
+# Set the number of threads that will created
+set_num_threads(num_threads)
 
 def custom_multi_modal_array(x, y, w, positions, sigma_x, sigma_y):
     total = np.zeros_like(x)
