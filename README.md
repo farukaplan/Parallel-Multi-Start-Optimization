@@ -3,8 +3,7 @@
 ### Introduction
 1) **Cost Function**: We used custom cost function to show effectiveness of the model, but you can apply it to any cost function as you wish:
 
-$$ f(x, y) = -\left( \sum_{i=1}^{n} w_i \exp\left(-\left(\frac{(x - p_{i,x})^2}{2\sigma_{x,i}^2} + \frac{(y - p_{i,y})^2}{2\sigma_{y,i}^2}\right)\right) 
-+ 0.2 \sin(4\pi x) \cos(3\pi y) - 0.1 \left(\frac{1}{5}x^2 + \frac{4}{5}y^2\right) \right) $$
+$$ f(x, y) = -\left( \sum_{i=1}^{n} w_i \exp\left(-\left(\frac{(x - p_{i,x})^2}{2\sigma_{x,i}^2} + \frac{(y - p_{i,y})^2}{2\sigma_{y,i}^2}\right)\right) + 0.2 \sin(4\pi x) \cos(3\pi y) - 0.1 \left(\frac{1}{5}x^2 + \frac{4}{5}y^2\right) \right) $$
 
 $$ \begin{align*}
 n & : \text{Number of minima} \\
@@ -47,6 +46,7 @@ $$ \frac{\partial f}{\partial y} = -\left(\sum_{i=1}^{n} w_i \exp\left(-\left(\f
    pip3 install -r requirements.txt
 
 You can execute these files using below commands:
+
     ```bash
     python3 main.py
 
@@ -54,13 +54,13 @@ You can execute these files using below commands:
     python3 single.py
 
     ```bash
-    python3 sequential.py
+    python3 sequential.py <num of starting points>
 
     ```bash
     mpiexec -n <num of processes> python3 parallel_mpi.py <num of starting points>
 
     ```bash
-    python3 parallel_numba.py <num of starting points>
+    python3 parallel_numba.py <num of starting points> <num of threads>
 
 
 
