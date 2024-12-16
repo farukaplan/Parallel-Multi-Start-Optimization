@@ -37,7 +37,7 @@ $$ \frac{\partial f}{\partial y} = -\left(\sum_{i=1}^{n} w_i \exp\left(-\left(\f
     - _single.py_: This is traditional single-start optimization. You can observe that it will probably stuck on local minima
     - _sequential.py_: This uses multi-start technique implemented sequentially
     - _parallel-mpi.py_: This uses parallel multi-start technique implemented with MPI library
-    - _parallel-numba.py_: This uses parallel multi-start technique implemented with Numba's OMP
+    - _parallel-numba.py_: This uses thread parallelization with Numba's OMP for multi-start implementation
 
 ### Prerequistes
 1. Make sure you have Python installed (preferably version 3.7 or later).
