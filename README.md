@@ -44,23 +44,37 @@ $$ \frac{\partial f}{\partial y} = -\left(\sum_{i=1}^{n} w_i \exp\left(-\left(\f
 2. Install the required dependencies using `pip3`:
    ```bash
    pip3 install -r requirements.txt
-
 You can execute these files using below commands:
 
-    ```bash
-    python3 main.py
+```bash
+python3 main.py
+```
 
-    ```bash
-    python3 single.py
+```bash
+python3 single.py
+```
 
-    ```bash
-    python3 sequential.py <num of starting points>
+```bash
+python3 sequential.py <num of starting points>
+```
 
-    ```bash
-    mpiexec -n <num of processes> python3 parallel_mpi.py <num of starting points>
+```bash
+mpiexec -n <num of processes> python3 parallel_mpi.py <num of starting points>
+```
 
-    ```bash
-    python3 parallel_numba.py <num of starting points> <num of threads>
+```bash
+python3 parallel_numba.py <num of starting points> <num of threads>
+```
+
+>According to your file system, you may need to change the last line of the code.
+- For Windows/Mac file systems, use 
+    ```python
+    pio.write_html(fig, file='data/cost_function.html', auto_open=False)
+    ```
+- For Linux-based file systems, use 
+    ```python
+    pio.write_html(fig, file='../data/cost_function.html', auto_open=False)
+    ```
 
 
 
